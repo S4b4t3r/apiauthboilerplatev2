@@ -28,11 +28,11 @@ class Admin
     /**
      * @ORM\OneToMany(targetEntity=Category::class, mappedBy="admin")
      */
-    private $catrgories;
+    private $categories;
 
     public function __construct()
     {
-        $this->catrgories = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -55,28 +55,28 @@ class Admin
     /**
      * @return Collection|Category[]
      */
-    public function getCatrgories(): Collection
+    public function getCategories(): Collection
     {
-        return $this->catrgories;
+        return $this->categories;
     }
 
-    public function addCatrgory(Category $catrgory): self
+    public function addCategory(Category $category): self
     {
-        if (!$this->catrgories->contains($catrgory)) {
-            $this->catrgories[] = $catrgory;
-            $catrgory->setAdmin($this);
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setAdmin($this);
         }
 
         return $this;
     }
 
-    public function removeCatrgory(Category $catrgory): self
+    public function removeCategory(Category $category): self
     {
-        if ($this->catrgories->contains($catrgory)) {
-            $this->catrgories->removeElement($catrgory);
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
             // set the owning side to null (unless already changed)
-            if ($catrgory->getAdmin() === $this) {
-                $catrgory->setAdmin(null);
+            if ($category->getAdmin() === $this) {
+                $category->setAdmin(null);
             }
         }
 
