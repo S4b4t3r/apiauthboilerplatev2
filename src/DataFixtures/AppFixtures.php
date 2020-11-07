@@ -2,12 +2,17 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Event;
+use App\Entity\Assessment;
+use App\Entity\Category;
+use App\Entity\Admin;
+use App\Entity\Notification;
 use App\Entity\User;
+use App\Entity\Work;
 use DateTime;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Validator\Constraints\Date;
 
 class AppFixtures extends Fixture
 {
@@ -20,52 +25,63 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        // GENERATE TEST DATA
+        $admin = new Admin();
+
         $user = new User();
+        $user->setUsername('abcd');
         $user->setEmail("abcd@ab.cd");
         $password = $this->encoder->encodePassword($user, 'abcd');
         $user->setPassword($password);
-
-        $event1 = new Event();
-        $event1->setUser($user);
-        $event1->setTitle("Test 1");
-        $event1->setDescription("Évènement de test 1");
-        $event1->setStartDate(DateTime::createFromFormat('d/m/Y H:i', '01/10/2020 08:00'));
-        $manager->persist($event1);
-
-        $event2 = new Event();
-        $event2->setUser($user);
-        $event2->setTitle("Test 2");
-        $event2->setDescription("Évènement de test 2");
-        $event2->setStartDate(DateTime::createFromFormat('d/m/Y H:i', '01/10/2020 08:00'));
-        $event2->setEndDate(DateTime::createFromFormat('d/m/Y H:i', '03/10/2020 16:00'));
-        $manager->persist($event2);
-
-        $user->addEvent($event1);
-        $user->addEvent($event2);
-        $manager->persist($user);
+        $user->setAdmin($admin);
 
         $user2 = new User();
+        $user2->setUsername('jsabater');
         $user2->setEmail("jules@ab.cd");
         $password = $this->encoder->encodePassword($user2, 'abcd');
         $user2->setPassword($password);
 
-        $event3 = new Event();
-        $event3->setUser($user);
-        $event3->setTitle("Test 3");
-        $event3->setDescription("Évènement de test 3");
-        $event3->setStartDate(DateTime::createFromFormat('d/m/Y H:i', '08/10/2020 08:00'));
-        $manager->persist($event3);
+        for ($i = 1; $i < 3; $i++) {
+            $category = new Category();
+            $category->setTitle('Test category ' . $i);
+            $category->setAdmin($admin);
 
-        $event4 = new Event();
-        $event4->setUser($user);
-        $event4->setTitle("Test 4");
-        $event4->setDescription("Évènement de test 4");
-        $event4->setStartDate(DateTime::createFromFormat('d/m/Y H:i', '08/10/2020 08:00'));
-        $event4->setEndDate(DateTime::createFromFormat('d/m/Y H:i', '10/10/2020 16:00'));
-        $manager->persist($event4);
+            for ($j = 1; $j < 3; $j++) {
+                $assessment = new Assessment();
+                $assessment->setTitle('Test assessment ' . $i);
+                $assessment->setDescription('Assessment description');
+                $assessment->setCategory($category);
+                $date = new DateTime('now');
+                $date->modify($j == 1 ? '-7 day' : '+7 day');
+                $assessment->setDueDate($date);
 
-        $user2->addEvent($event3);
-        $user2->addEvent($event4);
+                for ($k = 1; $k < 3; $k++) {
+                    $work = new Work();
+                    $work->setTitle('Test work ' . $k);
+                    $work->setDescription('Work description');
+                    $work->setIsPublic($k == 1 ? true : false); // Pour la clarté (une entité sera true, l'autre false)
+                    $work->setAssessment($assessment);
+                    $work->setUser($user2);
+
+                    $manager->persist($work);
+                }
+
+                $manager->persist($assessment);
+            }
+            $manager->persist($category);
+        }
+
+        for ($i = 1; $i < 3; $i++) {
+            $notification = new Notification();
+            $notification->setUser($user);
+            $notification->setType('newupload');
+            $notification->setIsRead($i == 1 ? true : false);
+            $notification->setText('Un nouveau travail à été uploadé sur Assessment 1');
+            $manager->persist($notification);
+        }
+
+        $manager->persist($admin);
+        $manager->persist($user);
         $manager->persist($user2);
 
         $manager->flush();
