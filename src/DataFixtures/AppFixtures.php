@@ -62,6 +62,8 @@ class AppFixtures extends Fixture
                     $work->setIsPublic($k == 1 ? true : false); // Pour la clarté (une entité sera true, l'autre false)
                     $work->setAssessment($assessment);
                     $work->setUser($user2);
+                    $work->setCreatedAt(new DateTime('now'));
+                    $work->setUpdatedAt(new DateTime('now'));
 
                     $manager->persist($work);
                 }
@@ -71,11 +73,11 @@ class AppFixtures extends Fixture
             $manager->persist($category);
         }
 
-        for ($i = 1; $i < 3; $i++) {
+        for ($i = 1; $i < 4; $i++) {
             $notification = new Notification();
             $notification->setUser($user);
             $notification->setType('newupload');
-            $notification->setIsRead($i == 1 ? true : false);
+            $notification->setIsRead($i == 1 ? true : false); // Pour la clarté (une entité sera true, l'autre false)
             $notification->setText('Un nouveau travail à été uploadé sur Assessment 1');
             $manager->persist($notification);
         }
