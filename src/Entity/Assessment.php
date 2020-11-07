@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AssessmentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +39,16 @@ class Assessment
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Work::class, mappedBy="assessment", orphanRemoval=true)
+     */
+    private $works;
+
+    public function __construct()
+    {
+        $this->works = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -87,6 +99,37 @@ class Assessment
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Work[]
+     */
+    public function getWorks(): Collection
+    {
+        return $this->works;
+    }
+
+    public function addWork(Work $work): self
+    {
+        if (!$this->works->contains($work)) {
+            $this->works[] = $work;
+            $work->setAssessment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWork(Work $work): self
+    {
+        if ($this->works->contains($work)) {
+            $this->works->removeElement($work);
+            // set the owning side to null (unless already changed)
+            if ($work->getAssessment() === $this) {
+                $work->setAssessment(null);
+            }
+        }
 
         return $this;
     }

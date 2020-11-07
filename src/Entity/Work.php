@@ -45,6 +45,12 @@ class Work
      */
     private $likes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Assessment::class, inversedBy="works")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $assessment;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
@@ -130,6 +136,18 @@ class Work
                 $like->setWork(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAssessment(): ?Assessment
+    {
+        return $this->assessment;
+    }
+
+    public function setAssessment(?Assessment $assessment): self
+    {
+        $this->assessment = $assessment;
 
         return $this;
     }
