@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+   <head>
+       <meta charset="UTF-8">
+       <title>{% block title %}Welcome!{% endblock %}</title>
+   </head>
+   <body>
+   <div>
+       {% block body %}
+       {% endblock %}
+       {{ encore_entry_script_tags('app') }}
+   </div>
+   </body>
+</html>

@@ -1,20 +1,20 @@
 <template>
-  <div id="app">
-    <hello></hello>
-  </div>
+    <div>
+        <h2>Welcome on vue !</h2>
+        <button @click="counter++">Click me {{counter}}</button>
+    </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
-
-class TestClassSyntax {
-
-}
-
 export default {
-  name: 'app',
-  components: {
-    Hello
-  }
+    data: function() {
+        return {
+            counter: 0,
+        }
+    }
 }
 </script>
+
+<style>
+
+</style>

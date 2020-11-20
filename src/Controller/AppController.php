@@ -10,11 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AppController extends AbstractController
 {
     /**
-     * @Route("/", name="app")
+     * @Route("/home", name="home")
      */
     public function default()
     {
-        return $this->render('app.html.twig', [
+        return $this->render('home/home.html.twig', [
+            'controller_name' => 'HomeController',
         ]);
     }
 }
