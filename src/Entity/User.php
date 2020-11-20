@@ -66,14 +66,37 @@ class User implements UserInterface
      */
     private $password;
 
+
     /**
-     * @ORM\OneToMany(targetEntity=Event::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Work::class, mappedBy="user", orphanRemoval=true)
      */
-    private $event;
+    private $works;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Like::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $likes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $notifications;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Admin::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $admin;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
 
     public function __construct()
     {
-        $this->event = new ArrayCollection();
+        $this->works = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,32 +178,118 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Event[]
+     * @return Collection|Work[]
      */
-    public function getEvent(): Collection
+    public function getWorks(): Collection
     {
-        return $this->event;
+        return $this->works;
     }
 
-    public function addEvent(Event $event): self
+    public function addWork(Work $work): self
     {
-        if (!$this->event->contains($event)) {
-            $this->event[] = $event;
-            $event->setUser($this);
+        if (!$this->works->contains($work)) {
+            $this->works[] = $work;
+            $work->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeEvent(Event $event): self
+    public function removeWork(Work $work): self
     {
-        if ($this->event->contains($event)) {
-            $this->event->removeElement($event);
+        if ($this->works->contains($work)) {
+            $this->works->removeElement($work);
             // set the owning side to null (unless already changed)
-            if ($event->getUser() === $this) {
-                $event->setUser(null);
+            if ($work->getUser() === $this) {
+                $work->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Like[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): self
+    {
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getUser() === $this) {
+                $like->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAdmin(): ?Admin
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(Admin $admin): self
+    {
+        $this->admin = $admin;
+
+        // set the owning side of the relation if necessary
+        if ($admin->getUser() !== $this) {
+            $admin->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
 
         return $this;
     }
