@@ -185,6 +185,28 @@ class User implements UserInterface
         return $this->works;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getWorksSerialized(): array
+    {
+        $i = 0;
+        $works = [];
+        foreach($this->getWorks() as $work)
+        {
+            array_push($works, [
+                'id' =>$work->getId(),
+                'title' => $work->getTitle(),
+                'description' => $work->getDescription(),
+                'isPublic' => $work->getIsPublic(),
+                'createdAt' => $work->getCreatedAt(),
+                'updatedAt' => 'Y-m-d h:i:s', $work->getUpdatedAt()
+            ]);
+            $i++;
+        }
+        return $works;
+    }
+
     public function addWork(Work $work): self
     {
         if (!$this->works->contains($work)) {
