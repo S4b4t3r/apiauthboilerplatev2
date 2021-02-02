@@ -185,4 +185,17 @@ class Work
 
         return $this;
     }
+
+    public function serialize()
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'is_public' => $this->is_public,
+            'likes' => count($this->getLikes()),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
+    }
 }

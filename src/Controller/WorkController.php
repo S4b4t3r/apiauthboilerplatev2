@@ -27,32 +27,6 @@ class WorkController extends AbstractController
     }
 
     /**
-     * @Route(methods={"POST"}, name="add")
-     */
-    public function addWork(Request $request): JsonResponse
-    {
-        $manager = $this->getDoctrine()->getManager();
-
-        $user = $this->getUser();
-        $data = json_decode($request->getContent(), true);
-
-        $work = new Work();
-        $work->setUser($user);
-        $work->setTitle($data['title']);
-        $work->setDescription($data['description']);
-
-        $startDate = \DateTime::createFromFormat('Y-m-d H:i:s.u', $data['startDate']);
-        $endDate = \DateTime::createFromFormat('Y-m-d H:i:s.u', $data['endDate']);
-
-        $work->setStartDate($startDate? $startDate: null);
-        $work->setEndDate($endDate? $endDate: null);
-
-        $manager->persist($work);
-        $manager->flush();
-        return new JsonResponse("Work added!", 200);
-    }
-
-    /**
      * @Route("/{work}", methods={"PUT"}, name="edit")
      * @param Work $work
      */
@@ -121,26 +95,6 @@ class WorkController extends AbstractController
      * @param Work $work
      */
     public function createFile(Work $work): JsonResponse
-    {
-        return new JsonResponse("Not Implemented", 501);
-    }
-
-    /**
-     * @Route("/{work}/{file}", methods={"PUT"}, name="files_edit")
-     * @param Work $work
-     * @param File $file
-     */
-    public function editFile(Work $work, File $file): JsonResponse
-    {
-        return new JsonResponse("Not Implemented", 501);
-    }
-
-    /**
-     * @Route("/{work}/{file}", methods={"DELETE"}, name="files_delete")
-     * @param Work $work
-     * @param File $file
-     */
-    public function deleteFile(Work $work, File $file): JsonResponse
     {
         return new JsonResponse("Not Implemented", 501);
     }

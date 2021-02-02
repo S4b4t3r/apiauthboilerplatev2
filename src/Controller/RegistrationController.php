@@ -33,17 +33,6 @@ class RegistrationController extends AbstractController
 
     /**
      * @Route("/registration", name="registration")
-     */
-    /*
-    public function index()
-    {
-        return $this->render('registration/index.html.twig', [
-            'controller_name' => 'RegistrationController',
-        ]);
-    }
-    */
-
-    /**
      * Register new user
      * @param Request $request
      * @param EntityManagerInterface $manager

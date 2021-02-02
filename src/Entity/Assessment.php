@@ -133,4 +133,14 @@ class Assessment
 
         return $this;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'due_date' => $this->due_date
+        ];
+    }
 }

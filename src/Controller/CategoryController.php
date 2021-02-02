@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Assessment;
 use App\Entity\Category;
+use App\Repository\AssessmentRepository;
 use App\Repository\CategoryRepository;
+use phpDocumentor\Reflection\DocBlock\Tags\Reference\Reference;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +25,7 @@ class CategoryController extends AbstractController
     {
         $data['categories'] = [];
         foreach ($categoryRepository->findAll() as $c) {
-            $data['categories'] = $c;
+            array_push($data['categories'], $c->serialize());
         }
         return new JsonResponse(json_encode($data));
     }
@@ -91,37 +93,40 @@ class CategoryController extends AbstractController
      * @param Category $category
      * Returns the assessments of x category
      */
-    public function getAssessments(Category $category): JsonResponse
+    public function getAssessments(Category $category, AssessmentRepository $assessmentRepository): JsonResponse
     {
-        return new JsonResponse("Not Implemented", 501);
+        $data['category'] = $category->serialize();
+        $data['assessments'] = [];
+        foreach ($assessmentRepository->findBy(['category' => $category->getId()]) as $a) {
+            array_push($data['assessments'], $a->serialize());
+        }
+
+        return new JsonResponse(json_encode($data));
     }
 
     /**
      * @Route("/{category}/assessments", methods={"POST"}, name="assessments_create")
      * @param Category $category
      */
-    public function createAssessment(Category $category): JsonResponse
+    public function createAssessment(Category $category, Request $request): JsonResponse
     {
-        return new JsonResponse("Not Implemented", 501);
-    }
+        $admin = $this->getUser()->getAdmin();
+        if ($admin != null)
+        {
+            $manager = $this->getDoctrine()->getManager();
+            $data = json_decode($request->getContent(), true);
 
-    /**
-     * @Route("/{category}/{assessment}", methods={"PUT"}, name="assessments_edit")
-     * @param Category $category
-     * @param Assessment $assessment
-     */
-    public function editAssessment(Category $category, Assessment $assessment): JsonResponse
-    {
-        return new JsonResponse("Not Implemented", 501);
-    }
+            $assessment = new Assessment();
+            $assessment->setCategory($category);
+            $assessment->setTitle($data['title']);
+            $assessment->setDescription($data['description']);
+            $dueDate = \DateTime::createFromFormat('Y-m-d H:i:s.u', $data['dueDate']);
+            $assessment->setDueDate($dueDate? $dueDate: null);
 
-    /**
-     * @Route("/{category}/{assessment}", methods={"DELETE"}, name="assessments_delete")
-     * @param Category $category
-     * @param Assessment $assessment
-     */
-    public function deleteAssessment(Category $category, Assessment $assessment): JsonResponse
-    {
-        return new JsonResponse("Not Implemented", 501);
+            $manager->persist($assessment);
+            $manager->flush();
+            return new JsonResponse("Assessment created!", 200);
+
+        } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }
 }
