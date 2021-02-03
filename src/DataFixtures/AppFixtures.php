@@ -44,6 +44,7 @@ class AppFixtures extends Fixture
         for ($i = 1; $i < 3; $i++) {
             $category = new Category();
             $category->setTitle('Test category ' . $i);
+            $category->setDescription('Test description ' . $i);
             $category->setAdmin($admin);
 
             for ($j = 1; $j < 3; $j++) {

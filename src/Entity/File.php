@@ -38,6 +38,12 @@ class File
      */
     private $updated_at;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Work::class, inversedBy="files")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $work;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -87,6 +93,28 @@ class File
     public function setUpdatedAt(\DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function serialize()
+    {
+        return [
+            "file" => $this->file,
+            "filename" => $this->filename,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at
+        ];
+    }
+
+    public function getWork(): ?Work
+    {
+        return $this->work;
+    }
+
+    public function setWork(?Work $work): self
+    {
+        $this->work = $work;
 
         return $this;
     }
