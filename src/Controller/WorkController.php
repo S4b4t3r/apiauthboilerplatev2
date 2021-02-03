@@ -37,23 +37,20 @@ class WorkController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $user = $this->getUser();
 
-        foreach($user->getWork() as $e)
+        if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
-            if ($e->getId() == $work->getId())
+            if (isset($data['title']) && isset($data['description']) && isset($data['is_public']))
             {
                 $work->setTitle($data['title']);
                 $work->setDescription($data['description']);
-                $startDate = \DateTime::createFromFormat('Y-m-d H:i:s.u', $data['startDate']);
-                $endDate = \DateTime::createFromFormat('Y-m-d H:i:s.u', $data['endDate']);
-
-                $work->setStartDate($startDate? $startDate: null);
-                $work->setEndDate($endDate? $endDate: null);
+                $work->setUpdatedAt(new \DateTime());
 
                 $manager->flush();
                 return new JsonResponse("Work edited!", 200);
-            }
+            } else return new JsonResponse(['error' => "Missing data : 'title', 'description' & 'is_public' needed to create Work," . (!isset($data['title'])?:" 'title'") . (!isset($data['description'])?:" 'description'") . (!isset($data['is_public'])?:" 'is_public'") . " given."], 400);
         }
-        return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User!"], 400);
+
+        return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
     }
 
 
@@ -68,16 +65,13 @@ class WorkController extends AbstractController
         $user = $this->getUser();
         $data = json_decode($request->getContent(), true);
 
-        foreach($user->getWork() as $e)
+        if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
-            if ($e->getId() == $work->getId())
-            {
-                $manager->remove($work);
-                $manager->flush();
-                return new JsonResponse("Work deleted!", 200);
-            }
+            $manager->remove($work);
+            $manager->flush();
+            return new JsonResponse("Work deleted!", 200);
         }
-        return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User!"], 400);
+        return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
     }
 
     /**
@@ -87,15 +81,34 @@ class WorkController extends AbstractController
      */
     public function getFiles(Work $work): JsonResponse
     {
-        return new JsonResponse("Not Implemented", 501);
+        $user = $this->getUser();
+        $data['work'] = $work->serialize();
+        
+        if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
+        {
+            foreach ($work->getFiles() as $file) {
+                array_push($data['files'], $file->serialize());
+            }
+
+            return new JsonResponse(json_encode($data));
+        }
+
+        return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
     }
 
     /**
      * @Route("/{work}/files", methods={"POST"}, name="files_create")
      * @param Work $work
      */
-    public function createFile(Work $work): JsonResponse
+    public function createFile(Work $work, Request $request): JsonResponse
     {
+        $manager = $this->getDoctrine()->getManager();
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['title']) && isset($data['description']) && isset($data['is_public'])) // TODO : Droits de création
+        {
+
+        }
         return new JsonResponse("Not Implemented", 501);
     }
 }

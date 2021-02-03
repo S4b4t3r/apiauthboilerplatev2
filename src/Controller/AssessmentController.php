@@ -59,11 +59,11 @@ class AssessmentController extends AbstractController
      * @param Assessment $assessment
      * Returns the works of x assessment
      */
-    public function getWorks(Assessment $assessment, WorkRepository $workRepository): JsonResponse
+    public function getWorks(Assessment $assessment): JsonResponse
     {
         $data['assessment'] = $assessment->serialize();
         $data['works'] = [];
-        foreach ($workRepository->findBy(['assessment' => $assessment->getId()]) as $w) {
+        foreach ($assessment->getWorks() as $w) {
             array_push($data['works'], $w->serialize());
         }
 
@@ -77,23 +77,23 @@ class AssessmentController extends AbstractController
     public function createWork(Assessment $assessment, Request $request): JsonResponse
     {
         // $admin = $this->getUser()->getAdmin();
-        if (true) // TODO : Droits de création
-        {
-            $manager = $this->getDoctrine()->getManager();
-            $data = json_decode($request->getContent(), true);
+        $manager = $this->getDoctrine()->getManager();
+        $data = json_decode($request->getContent(), true);
 
+        if (isset($data['title']) && isset($data['description']) && isset($data['is_public'])) // TODO : Droits de création
+        {
             $work = new Work();
+            $work->setAssessment($assessment);
             $work->setTitle($data['title']);
             $work->setDescription($data['description']);
-            $work->setDescription($data['description']);
-            $work->setDescription($data['is_public']);
+            $work->setIsPublic($data['is_public']);
             $work->setCreatedAt( new \DateTime());
-            $work->setUpdatedAt( new \DateTime());
+            $work->setUpdatedAt(null);
 
             $manager->persist($work);
             $manager->flush();
             return new JsonResponse("Work created!", 200);
 
-        } else return new JsonResponse(['error' => ""], 400);
+        }  else return new JsonResponse(['error' => "Missing data : 'title', 'description' & 'is_public' needed to create Work," . (!isset($data['title'])?"":" 'title'") . (!isset($data['description'])?"":" 'description'") . (!isset($data['is_public'])?"":" 'is_public'") . " given."], 400);
     }
 }

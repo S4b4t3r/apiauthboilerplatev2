@@ -61,9 +61,15 @@ class Work
      */
     private $updated_at;
 
+    /**
+     * @ORM\OneToMany(targetEntity=File::class, mappedBy="work", orphanRemoval=true)
+     */
+    private $files;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -197,5 +203,36 @@ class Work
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
+    }
+
+    /**
+     * @return Collection|File[]
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFile(File $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setWork($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $file): self
+    {
+        if ($this->files->contains($file)) {
+            $this->files->removeElement($file);
+            // set the owning side to null (unless already changed)
+            if ($file->getWork() === $this) {
+                $file->setWork(null);
+            }
+        }
+
+        return $this;
     }
 }
