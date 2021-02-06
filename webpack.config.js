@@ -1,5 +1,4 @@
 var Encore = require('@symfony/webpack-encore');
-
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -28,6 +27,13 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
+    .enablePostCssLoader((options) => {
+        options.config = {
+         // directory where the postcss.config.js file is stored
+                path: './postcss.config.js'
+        };
+    })
+
     //.addEntry('page1', './assets/page1.js')
     //.addEntry('page2', './assets/page2.js')
 
