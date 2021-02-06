@@ -88,7 +88,7 @@ class AssessmentController extends AbstractController
             $work->setDescription($data['description']);
             $work->setIsPublic($data['is_public']);
             $work->setCreatedAt( new \DateTime());
-            $work->setUpdatedAt(null);
+            $work->setUpdatedAt(new \DateTime())
 
             $manager->persist($work);
             $manager->flush();

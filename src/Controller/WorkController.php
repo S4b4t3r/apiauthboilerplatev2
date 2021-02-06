@@ -115,7 +115,7 @@ class WorkController extends AbstractController
                 $file->setFilename();
                 $file->setFile();
                 $file->setCreatedAt(new \DateTime());
-                $file->setUpdatedAt(null);
+                $file->setUpdatedAt(new \DateTime());
                 $manager->persist($file);
             }
             return new JsonResponse(['error' => "Missing data : 'filename', 'file & 'created_at' needed to create File," .

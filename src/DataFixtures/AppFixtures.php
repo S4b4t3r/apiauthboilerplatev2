@@ -5,6 +5,8 @@ namespace App\DataFixtures;
 use App\Entity\Assessment;
 use App\Entity\Category;
 use App\Entity\Admin;
+use App\Entity\File;
+use App\Entity\MediaObject;
 use App\Entity\Notification;
 use App\Entity\User;
 use App\Entity\Work;
@@ -60,11 +62,24 @@ class AppFixtures extends Fixture
                     $work = new Work();
                     $work->setTitle('Test work ' . $k);
                     $work->setDescription('Work description');
-                    $work->setIsPublic($k == 1 ? true : false); // Pour la clarté (une entité sera true, l'autre false)
+                    $work->setIsPublic($k == 1); // (une entité sera true, l'autre false)
                     $work->setAssessment($assessment);
                     $work->setUser($j % 2 == 0 ? $user : $user2);
                     $work->setCreatedAt(new DateTime('now'));
                     $work->setUpdatedAt(new DateTime('now'));
+
+                    for ($l = 1; $l < 3; $l++) {
+                        $file = new MediaObject();
+                        $file->setWork($work);
+                        /*
+                        $file->setFile();
+                        $file->setFilename('test_file_'.$k.$l);
+                        */
+                        $file->setCreatedAt(new DateTime('now'));
+                        $file->setUpdatedAt(new DateTime('now'));
+
+                        $manager->persist($file);
+                    }
 
                     $manager->persist($work);
                 }

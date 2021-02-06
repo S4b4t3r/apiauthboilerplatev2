@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\File;
+use App\Entity\MediaObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,18 +14,18 @@ class FileController extends AbstractController
 {
     /**
      * @Route("/{file}", methods={"PUT"}, name="edit")
-     * @param File $file
+     * @param MediaObject $file
      */
-    public function editFile(File $file): JsonResponse
+    public function editMediaObject(MediaObject $file): JsonResponse
     {
         return new JsonResponse("Not Implemented", 501);
     }
 
     /**
      * @Route("/file}", methods={"DELETE"}, name="delete")
-     * @param File $file
+     * @param MediaObject $file
      */
-    public function deleteFile(File $file): JsonResponse
+    public function deleteMediaObject(MediaObject $file): JsonResponse
     {
         return new JsonResponse("Not Implemented", 501);
     }
