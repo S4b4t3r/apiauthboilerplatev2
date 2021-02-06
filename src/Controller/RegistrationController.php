@@ -43,16 +43,19 @@ class RegistrationController extends AbstractController
     {
         $newUserData = json_decode($request->getContent());
 
-        if (!isset($newUserData->email) || !isset($newUserData->password))
-            return new JsonResponse("Data utilisateur invalides (email ou mdp null)" . var_dump($newUserData), 500);
-
-        $user = new User();
-        $user->setEmail($newUserData->email);
-        $password = $this->encoder->encodePassword($user, $newUserData->password);
-        $user->setPassword($password);
-        $manager->persist($user);
-        $manager->flush();
-
-        return new JsonResponse("OK", 200);
+        if (isset($newUserData->email, $newUserData->password))
+        {
+            $user = new User();
+            $user->setEmail($newUserData->email);
+            $password = $this->encoder->encodePassword($user, $newUserData->password);
+            $user->setPassword($password);
+            $manager->persist($user);
+            $manager->flush();
+            return new JsonResponse("User created!", 200);
+        }
+        return new JsonResponse(['error' => "Missing data : 'email' & 'password' needed to create User," .
+            (!isset($data['email']) ?: " 'email'") .
+            (!isset($data['password']) ?: " 'password'") .
+            " given."], 400);
     }
 }

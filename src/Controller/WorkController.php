@@ -39,7 +39,7 @@ class WorkController extends AbstractController
 
         if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
-            if (isset($data['title']) && isset($data['description']) && isset($data['is_public']))
+            if (isset($data['title'], $data['description'], $data['is_public']))
             {
                 $work->setTitle($data['title']);
                 $work->setDescription($data['description']);
@@ -102,13 +102,30 @@ class WorkController extends AbstractController
      */
     public function createFile(Work $work, Request $request): JsonResponse
     {
+        $user = $this->getUser();
         $manager = $this->getDoctrine()->getManager();
         $data = json_decode($request->getContent(), true);
 
-        if (isset($data['title']) && isset($data['description']) && isset($data['is_public'])) // TODO : Droits de création
+        if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
-
+            if (isset($data['filename'], $data['file'], $data['created_at'])) // TODO : Droits de création, Bulk create ?
+            {
+                $file = new File();
+                $file->setWork($work);
+                $file->setFilename();
+                $file->setFile();
+                $file->setCreatedAt(new \DateTime());
+                $file->setUpdatedAt(null);
+                $manager->persist($file);
+            }
+            return new JsonResponse(['error' => "Missing data : 'filename', 'file & 'created_at' needed to create File," .
+                (!isset($data['filename']) ?: " 'filename'") .
+                (!isset($data['file']) ?: " 'file'") .
+                (!isset($data['created_at']) ?: " 'created_at'") .
+                " given."], 400);
         }
-        return new JsonResponse("Not Implemented", 501);
+        return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
+
+
     }
 }
