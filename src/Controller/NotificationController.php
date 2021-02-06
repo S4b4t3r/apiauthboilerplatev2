@@ -12,15 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class NotificationController extends AbstractController
 {
     /**
-     * @Route(methods={"GET"}, name="get")
+     * @Route(methods={"GET"}, name="get_unread")
      */
     public function getNotifications(NotificationRepository $notificationRepository)
     {
         $user = $this->getUser();
 
         $data['notifications'] = [];
-        foreach ($notificationRepository->findAll() as $c) {
-            $data['categories'] = $c;
+        foreach ($notificationRepository->findNotRead() as $n) {
+            array_push($data['notifications'], $n->serialize);
         }
         return new JsonResponse(json_encode($data));
     }

@@ -90,4 +90,13 @@ class Notification
 
         return $this;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'text' => $this->text
+        ];
+    }
 }

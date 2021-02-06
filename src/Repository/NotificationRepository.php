@@ -19,7 +19,7 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    public function findNotRead(?string $term)
+    public function findNotRead()
     {
         $qb = $this->createQueryBuilder('n')
             ->innerJoin('n.user', 'u')
