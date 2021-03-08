@@ -41,13 +41,13 @@ class RegistrationController extends AbstractController
      */
     public function register(Request $request, EntityManagerInterface $manager)
     {
-        $newUserData = json_decode($request->getContent());
+        $data = json_decode($request->getContent(), true);
 
-        if (isset($newUserData->email, $newUserData->password))
+        if (isset($data['email'], $data['password']))
         {
             $user = new User();
-            $user->setEmail($newUserData->email);
-            $password = $this->encoder->encodePassword($user, $newUserData->password);
+            $user->setEmail($data['email']);
+            $password = $this->encoder->encodePassword($user, $data['password']);
             $user->setPassword($password);
             $manager->persist($user);
             $manager->flush();

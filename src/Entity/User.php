@@ -87,11 +87,6 @@ class User implements UserInterface
      */
     private $admin;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $username;
-
     public function __construct()
     {
         $this->works = new ArrayCollection();
@@ -305,13 +300,6 @@ class User implements UserInterface
         if ($admin->getUser() !== $this) {
             $admin->setUser($this);
         }
-
-        return $this;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
 
         return $this;
     }
