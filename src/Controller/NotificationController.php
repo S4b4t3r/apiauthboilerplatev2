@@ -29,7 +29,7 @@ class NotificationController extends AbstractController
     }
 
     /**
-     * @Route(methods={"POST"}, name="mark_as_read")
+     * @Route("/{notification}", methods={"POST"}, name="mark_as_read")
      * @param Notification $notification
      */
     public function markAsReadNotifications(Notification $notification): JsonResponse
@@ -41,7 +41,9 @@ class NotificationController extends AbstractController
         {
             $notification->setIsRead(true);
             $manager->flush();
+            return new JsonResponse(["Notification marked as read!"], 200);
+        } else {
+            return new JsonResponse(['error' => "Notification id:".$notification->getId()." doesn't belong to the User!"], 400);
         }
-        return new JsonResponse(["Notification marked as read!"], 200);
     }
 }
