@@ -105,7 +105,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/{category}/assessments", methods={"POST"}, name="assessments_create")
+     * @Route("/{category}/assessment", methods={"POST"}, name="assessments_create")
      * @param Category $category
      */
     public function createAssessment(Category $category, Request $request): JsonResponse

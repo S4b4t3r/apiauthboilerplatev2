@@ -116,7 +116,7 @@ class WorkController extends AbstractController
                 $mediaObject = new MediaObject();
 
                 $base64Image = $data['file'];
-                // $base64Image = $base64FileExtractor->extractBase64String($base64Image); // TODO : preprocess les données en fonction de ce que Alice m'envoie
+                $base64Image = $base64FileExtractor->extractBase64String($base64Image); // TODO : preprocess les données en fonction de ce que Alice m'envoie
                 $imageFile = new UploadedBase64File($base64Image, $data['filename']);
 
                 $mediaObject->setFile($imageFile);

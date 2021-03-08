@@ -71,7 +71,7 @@ class AssessmentController extends AbstractController
     }
 
     /**
-     * @Route("/{assessment}/works", methods={"POST"}, name="works_create")
+     * @Route("/{assessment}/work", methods={"POST"}, name="works_create")
      * @param Assessment $assessment
      */
     public function createWork(Assessment $assessment, Request $request): JsonResponse
