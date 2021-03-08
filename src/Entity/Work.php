@@ -62,14 +62,15 @@ class Work
     private $updated_at;
 
     /**
-     * @ORM\OneToMany(targetEntity=File::class, mappedBy="work", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=MediaObject::class, mappedBy="work", orphanRemoval=true)
      */
-    private $files;
+    private $mediaObjects;
 
     public function __construct()
     {
         $this->likes = new ArrayCollection();
         $this->files = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -206,30 +207,30 @@ class Work
     }
 
     /**
-     * @return Collection|File[]
+     * @return Collection|MediaObject[]
      */
-    public function getFiles(): Collection
+    public function getMediaObjects(): Collection
     {
-        return $this->files;
+        return $this->mediaObjects;
     }
 
-    public function addFile(File $file): self
+    public function addMediaObject(MediaObject $mediaObject): self
     {
-        if (!$this->files->contains($file)) {
-            $this->files[] = $file;
-            $file->setWork($this);
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects[] = $mediaObject;
+            $mediaObject->setWork($this);
         }
 
         return $this;
     }
 
-    public function removeFile(File $file): self
+    public function removeMediaObject(MediaObject $mediaObject): self
     {
-        if ($this->files->contains($file)) {
-            $this->files->removeElement($file);
+        if ($this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects->removeElement($mediaObject);
             // set the owning side to null (unless already changed)
-            if ($file->getWork() === $this) {
-                $file->setWork(null);
+            if ($mediaObject->getWork() === $this) {
+                $mediaObject->setWork(null);
             }
         }
 

@@ -22,7 +22,7 @@ class FileController extends AbstractController
     }
 
     /**
-     * @Route("/file}", methods={"DELETE"}, name="delete")
+     * @Route("/{file}", methods={"DELETE"}, name="delete")
      * @param MediaObject $file
      */
     public function deleteMediaObject(MediaObject $file): JsonResponse

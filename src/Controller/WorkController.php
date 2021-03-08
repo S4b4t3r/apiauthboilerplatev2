@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\File;
+use App\Entity\MediaObject;
 use App\Entity\Work;
+use App\Service\Base64FileExtractor;
+use App\Service\UploadedBase64File;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +88,8 @@ class WorkController extends AbstractController
         
         if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
-            foreach ($work->getFiles() as $file) {
+            $data['files'] = [];
+            foreach ($work->getMediaObjects() as $file) {
                 array_push($data['files'], $file->serialize());
             }
 
@@ -97,10 +100,10 @@ class WorkController extends AbstractController
     }
 
     /**
-     * @Route("/{work}/files", methods={"POST"}, name="files_create")
+     * @Route("/{work}/file", methods={"POST"}, name="files_create")
      * @param Work $work
      */
-    public function createFile(Work $work, Request $request): JsonResponse
+    public function createFile(Work $work, Request $request, Base64FileExtractor $base64FileExtractor): JsonResponse
     {
         $user = $this->getUser();
         $manager = $this->getDoctrine()->getManager();
@@ -108,20 +111,33 @@ class WorkController extends AbstractController
 
         if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
-            if (isset($data['filename'], $data['file'], $data['created_at'])) // TODO : Droits de création, Bulk create ?
+            if (isset($data['filename'], $data['file'])) // TODO : Droits de création, Bulk create ?
             {
+                $mediaObject = new MediaObject();
+
+                $base64Image = $data['file'];
+                // $base64Image = $base64FileExtractor->extractBase64String($base64Image); // TODO : preprocess les données en fonction de ce que Alice m'envoie
+                $imageFile = new UploadedBase64File($base64Image, $data['filename']);
+
+                $mediaObject->setFile($imageFile);
+                $mediaObject->setWork($work);
+
+                /*
                 $file = new File();
                 $file->setWork($work);
-                $file->setFilename();
-                $file->setFile();
+                $file->setFilename($data['filename']);
+                $file->setFile($mediaObject);
+                /*
                 $file->setCreatedAt(new \DateTime());
                 $file->setUpdatedAt(new \DateTime());
-                $manager->persist($file);
+                */
+                $manager->persist($mediaObject);
+                $manager->flush();
+                return new JsonResponse("File created!", 200);
             }
-            return new JsonResponse(['error' => "Missing data : 'filename', 'file & 'created_at' needed to create File," .
+            return new JsonResponse(['error' => "Missing data : 'filename', 'file' needed to create File," .
                 (!isset($data['filename']) ?: " 'filename'") .
                 (!isset($data['file']) ?: " 'file'") .
-                (!isset($data['created_at']) ?: " 'created_at'") .
                 " given."], 400);
         }
         return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
