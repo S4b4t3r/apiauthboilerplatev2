@@ -84,11 +84,10 @@ class AssessmentController extends AbstractController
         {
             $work = new Work();
             $work->setAssessment($assessment);
+            $work->setUser($this->getUser());
             $work->setTitle($data['title']);
             $work->setDescription($data['description']);
             $work->setIsPublic($data['is_public']);
-            $work->setCreatedAt( new \DateTime());
-            $work->setUpdatedAt(new \DateTime());
 
             $manager->persist($work);
             $manager->flush();

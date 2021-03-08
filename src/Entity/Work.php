@@ -69,8 +69,9 @@ class Work
     public function __construct()
     {
         $this->likes = new ArrayCollection();
-        $this->files = new ArrayCollection();
         $this->mediaObjects = new ArrayCollection();
+        $this->created_at = new \DateTime('now');
+        $this->updated_at = new \DateTime('now');
     }
 
     public function getId(): ?int
