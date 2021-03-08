@@ -28,14 +28,6 @@ class MediaObject
     protected $id;
 
     /**
-     * @var string|null
-     *
-     * @ApiProperty(iri="http://schema.org/contentUrl")
-     * @Groups({"media_object_read"})
-     */
-    public $contentUrl;
-
-    /**
      * @var File|null
      *
      * @Assert\NotNull(groups={"media_object_create"})
@@ -61,10 +53,16 @@ class MediaObject
     private $updated_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Work::class, inversedBy="files")
+     * @ORM\ManyToOne(targetEntity=Work::class, inversedBy="mediaObjects")
      * @ORM\JoinColumn(nullable=false)
      */
     private $work;
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime('now');
+        $this->updated_at = new \DateTime('now');
+    }
 
     public function getId(): ?int
     {
@@ -83,6 +81,7 @@ class MediaObject
         return $this;
     }
 
+    /*
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
@@ -94,15 +93,26 @@ class MediaObject
 
         return $this;
     }
+    */
 
     public function serialize()
     {
         return [
-            "file" => $this->file,
             "file_path" => $this->filePath,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at
         ];
+    }
+
+    public function setFile(?File $file): self
+    {
+        $this->file = $file;
+
+        if($this->file instanceof UploadedFile) {
+            $this->updatedAt = new \DateTime('now');
+        }
+
+        return $this;
     }
 
     public function getWork(): ?Work
@@ -116,4 +126,5 @@ class MediaObject
 
         return $this;
     }
+
 }

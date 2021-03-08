@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\Assessment;
 use App\Entity\Category;
 use App\Entity\Admin;
-use App\Entity\File;
 use App\Entity\MediaObject;
 use App\Entity\Notification;
 use App\Entity\User;
@@ -31,14 +30,12 @@ class AppFixtures extends Fixture
         $admin = new Admin();
 
         $user = new User();
-        $user->setUsername('abcd');
         $user->setEmail("abcd@ab.cd");
         $password = $this->encoder->encodePassword($user, 'abcd');
         $user->setPassword($password);
         $user->setAdmin($admin);
 
         $user2 = new User();
-        $user2->setUsername('jsabater');
         $user2->setEmail("jules@ab.cd");
         $password = $this->encoder->encodePassword($user2, 'abcd');
         $user2->setPassword($password);
@@ -75,8 +72,6 @@ class AppFixtures extends Fixture
                         $file->setFile();
                         $file->setFilename('test_file_'.$k.$l);
                         */
-                        $file->setCreatedAt(new DateTime('now'));
-                        $file->setUpdatedAt(new DateTime('now'));
 
                         $manager->persist($file);
                     }
