@@ -200,6 +200,7 @@ class Work
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'author' => $this->getUser()->getNomFormatted(),
             'is_public' => $this->is_public,
             'likes' => count($this->getLikes()),
             'created_at' => $this->created_at,

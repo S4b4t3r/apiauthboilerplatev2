@@ -35,6 +35,7 @@ class AuthenticationSuccessListener
 
         $data['data'] = array(
             'admin' => !is_null($user->getAdmin()),
+            'name' => $user->getNomFormatted(),
         );
 
         $event->setData($data);

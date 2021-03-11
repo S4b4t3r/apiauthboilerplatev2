@@ -43,7 +43,7 @@ class RegistrationController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (isset($data['email'], $data['password']))
+        if (isset($data['email'], $data['password'], $data['prenom'], $data['nom']))
         {
             $user = new User();
             $user->setEmail($data['email']);
@@ -53,9 +53,11 @@ class RegistrationController extends AbstractController
             $manager->flush();
             return new JsonResponse("User created!", 200);
         }
-        return new JsonResponse(['error' => "Missing data : 'email' & 'password' needed to create User," .
+        return new JsonResponse(['error' => "Missing data : 'email', 'password', 'prenom', 'nom' needed to create User," .
             (!isset($data['email']) ?: " 'email'") .
             (!isset($data['password']) ?: " 'password'") .
+            (!isset($data['prenom']) ?: " 'prenom'") .
+            (!isset($data['nom']) ?: " 'nom'") .
             " given."], 400);
     }
 }

@@ -33,12 +33,16 @@ class AppFixtures extends Fixture
         $user->setEmail("abcd@ab.cd");
         $password = $this->encoder->encodePassword($user, 'abcd');
         $user->setPassword($password);
+        $user->setNom("Admin");
+        $user->setPrenom("Abcd");
         $user->setAdmin($admin);
 
         $user2 = new User();
         $user2->setEmail("jules@ab.cd");
         $password = $this->encoder->encodePassword($user2, 'abcd');
         $user2->setPassword($password);
+        $user2->setNom("Sabater");
+        $user2->setPrenom("Jules");
 
         for ($i = 1; $i < 3; $i++) {
             $category = new Category();
