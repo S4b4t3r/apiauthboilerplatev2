@@ -14,6 +14,7 @@
         :icon="ctaIcon"
         :text="cta"
         color="purple-500"
+        class="w-full"
       ></Button>
     </form>
   </div>
@@ -30,8 +31,10 @@ export default {
     cta: String,
     ctaIcon: String,
     method: String,
+    submit: String,
+    route: String,
   },
-  setup(props) {
+  setup(props, {emit}) {
     let submit = async () => {
       let data = {};
       for(let i = 0; i < props.fields.length; i++) {
@@ -41,11 +44,36 @@ export default {
       }
       let response = await axios(
           {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'post',
-            url: '',   
+            url: window.address + props.route,   
             data: data
           }
-        )
+      ).catch(function (error) {
+        console.log(error);
+      });
+      if(response) {
+        if(props.submit == 'login' && response.status == 200) {
+          let token = response.data.token;
+          localStorage.setItem('token', token);
+          window.alert('Connexion réussie !');
+          emit('login', token)
+        }
+        
+        else if(props.submit == 'signup' && response.status == 200) {
+          window.alert('Inscription réussie, veuillez vous connecter !');
+          emit('close')
+        } 
+
+        else {
+          window.alert('Une erreur est survenue, désolé');
+        }
+      }  
+      else {
+        window.alert('Une erreur est survenue, désolé');
+      }
     };
 
     return {
