@@ -1,53 +1,51 @@
 <template>
-  <div>
+  <div class="main">
     <transition name="appear">
-      <div class="darken" @click="isOpen = false" v-if="isOpen"></div>
-    </transition>
-    <div class="main">
-      <navbar></navbar>
-      <div class="mainButton" @click="openMenu">
-        <div class="mainButton__drop">
-          <img :src="require('../img/drop.svg').default" />
+      <div class="relative darken" v-show="isOpen">
+        <div class="absolute w-1/3 p-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl top-1/2 left-1/2">
+          <upload></upload>
         </div>
-        <img
-          class="mainButton__logo"
-          :src="require('../img/logo.svg').default"
-        />
       </div>
-      <img class="waves" :src="require('../img/waves.svg').default" />
+    </transition>
+    <navbar></navbar>
+    <div class="mainButton" @click="openMenu">
+      <div class="mainButton__drop">
+        <img :src="require('../img/drop.svg').default" />
+      </div>
+      <img
+        class="mainButton__logo"
+        :src="require('../img/logo.svg').default"
+      />
     </div>
+    <img class="waves" :src="require('../img/waves.svg').default" />
   </div>
 </template>
 
 <script>
-import "./components/Navbar";
 import Navbar from "./components/Navbar.vue";
+import Upload from "./components/Upload.vue";
 
 export default {
-  components: { Navbar },
+  components: { Navbar, Upload },
   data: function () {
     return {
       isOpen: false,
     };
   },
-  setup() {
-    let openMenu = () => {
-      let token = localStorage.getItem("dropfiles_token");
+  methods: {
+    openMenu: function() {
+      let token = localStorage.getItem("token");
       if (token) {
-        isOpen = true;
+        this.isOpen = true;
       } else {
         window.alert('Veuillez d\'abord vous connecter');
       }
-    };
-
-    return {
-      openMenu
     }
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .darken {
   width: 100vw;
   height: 100vh;
