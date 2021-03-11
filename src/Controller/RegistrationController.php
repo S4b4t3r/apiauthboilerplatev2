@@ -49,6 +49,8 @@ class RegistrationController extends AbstractController
             $user->setEmail($data['email']);
             $password = $this->encoder->encodePassword($user, $data['password']);
             $user->setPassword($password);
+            $user->setPrenom($data['prenom']);
+            $user->setNom($data['nom']);
             $manager->persist($user);
             $manager->flush();
             return new JsonResponse("User created!", 200);
