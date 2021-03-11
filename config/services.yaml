@@ -46,3 +46,9 @@ services:
         class: App\Controller\RegistrationController
         arguments:
             - '@app.user.repository'
+
+    # Listener to add user role at authentication
+    acme_api.event.authentication_success_listener:
+        class: App\EventListener\AuthenticationSuccessListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }

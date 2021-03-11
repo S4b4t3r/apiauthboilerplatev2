@@ -27,7 +27,7 @@ class CategoryController extends AbstractController
         foreach ($categoryRepository->findAll() as $c) {
             array_push($data['categories'], $c->serialize());
         }
-        return new JsonResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     /**
@@ -101,7 +101,7 @@ class CategoryController extends AbstractController
             array_push($data['assessments'], $a->serialize());
         }
 
-        return new JsonResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     /**

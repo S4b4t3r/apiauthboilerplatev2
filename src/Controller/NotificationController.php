@@ -25,11 +25,11 @@ class NotificationController extends AbstractController
         foreach ($notificationRepository->findNotRead() as $n) {
             array_push($data['notifications'], $n->serialize);
         }
-        return new JsonResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     /**
-     * @Route(methods={"POST"}, name="mark_as_read")
+     * @Route("/{notification}", methods={"POST"}, name="mark_as_read")
      * @param Notification $notification
      */
     public function markAsReadNotifications(Notification $notification): JsonResponse
@@ -37,11 +37,13 @@ class NotificationController extends AbstractController
         $manager = $this->getDoctrine()->getManager();
         $user = $this->getUser();
 
-        if ($notification->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
+        if ($notification->getUser()->getId() === $user->getId())
         {
             $notification->setIsRead(true);
             $manager->flush();
+            return new JsonResponse(["Notification marked as read!"], 200);
+        } else {
+            return new JsonResponse(['error' => "Notification id:".$notification->getId()." doesn't belong to the User!"], 400);
         }
-        return new JsonResponse(["Notification marked as read!"], 200);
     }
 }

@@ -25,7 +25,7 @@ class WorkController extends AbstractController
         $data['user'] = ['username' => $user->getUsername()];
         $data['works'] = $user->getWorksSerialized();
 
-        return new JsonResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     /**
@@ -93,7 +93,7 @@ class WorkController extends AbstractController
                 array_push($data['files'], $file->serialize());
             }
 
-            return new JsonResponse(json_encode($data));
+            return new JsonResponse($data);
         }
 
         return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
