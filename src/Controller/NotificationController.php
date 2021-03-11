@@ -17,12 +17,12 @@ class NotificationController extends AbstractController
     /**
      * @Route(methods={"GET"}, name="get_unread")
      */
-    public function getNotifications(NotificationRepository $notificationRepository)
+    public function getNotifications()
     {
         $user = $this->getUser();
 
         $data['notifications'] = [];
-        foreach ($notificationRepository->findNotRead() as $n) {
+        foreach ($user->getNotifications() as $n) {
             array_push($data['notifications'], $n->serialize);
         }
         return new JsonResponse($data);
@@ -39,9 +39,10 @@ class NotificationController extends AbstractController
 
         if ($notification->getUser()->getId() === $user->getId())
         {
-            $notification->setIsRead(true);
+            $manager->remove($notification);
+            // $notification->setIsRead(true);
             $manager->flush();
-            return new JsonResponse(["Notification marked as read!"], 200);
+            return new JsonResponse(["Notification read!"], 200);
         } else {
             return new JsonResponse(['error' => "Notification id:".$notification->getId()." doesn't belong to the User!"], 400);
         }
