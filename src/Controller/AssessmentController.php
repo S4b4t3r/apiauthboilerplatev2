@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Assessment;
 use App\Entity\Work;
+use App\Repository\LikeRepository;
 use App\Repository\WorkRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -59,12 +60,16 @@ class AssessmentController extends AbstractController
      * @param Assessment $assessment
      * Returns the works of x assessment
      */
-    public function getWorks(Assessment $assessment): JsonResponse
+    public function getWorks(Assessment $assessment, LikeRepository $likeRepository): JsonResponse
     {
+        $user = $this->getUser();
         $data['assessment'] = $assessment->serialize();
         $data['works'] = [];
+
         foreach ($assessment->getWorks() as $w) {
-            array_push($data['works'], $w->serialize());
+            $work = $w->serialize();
+            $work['is_liked'] = (!is_null($likeRepository->findOneBy(['user' => $user->getId(), 'work' => $w->getId()])));
+            array_push($data['works'], $work);
         }
 
         return new JsonResponse($data);
