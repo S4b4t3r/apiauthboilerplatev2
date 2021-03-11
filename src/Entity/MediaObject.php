@@ -81,7 +81,6 @@ class MediaObject
         return $this;
     }
 
-    /*
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
@@ -93,7 +92,6 @@ class MediaObject
 
         return $this;
     }
-    */
 
     public function serialize()
     {
