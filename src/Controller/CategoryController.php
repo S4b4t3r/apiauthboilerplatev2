@@ -31,6 +31,19 @@ class CategoryController extends AbstractController
     }
 
     /**
+     * @Route("/search", methods={"GET"}, name="search")
+     */
+    public function searchCategories(CategoryRepository $categoryRepository, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $data['categories'] = [];
+        foreach ($categoryRepository->searchBy($data['keyword']) as $c) {
+            array_push($data['categories'], $c->serialize());
+        }
+        return new JsonResponse($data);
+    }
+
+    /**
      * @Route(methods={"POST"}, name="create")
     */
     public function createCategory(Request $request): JsonResponse
