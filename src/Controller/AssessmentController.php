@@ -67,7 +67,7 @@ class AssessmentController extends AbstractController
             array_push($data['works'], $w->serialize());
         }
 
-        return new JsonResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     /**

@@ -25,7 +25,7 @@ class NotificationController extends AbstractController
         foreach ($notificationRepository->findNotRead() as $n) {
             array_push($data['notifications'], $n->serialize);
         }
-        return new JsonResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     /**
@@ -37,7 +37,7 @@ class NotificationController extends AbstractController
         $manager = $this->getDoctrine()->getManager();
         $user = $this->getUser();
 
-        if ($notification->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
+        if ($notification->getUser()->getId() === $user->getId())
         {
             $notification->setIsRead(true);
             $manager->flush();
