@@ -7,38 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ApiPlatform\Core\Annotation\ApiResource;
 
 
 /**
- * @ApiResource(
- *     itemOperations={
- *          "get"={
- *             "path"="/users-api/{id}",
- *             "swagger_context"={
- *                 "tags"={"User"}
- *             }
- *          }
- *     },
- *     collectionOperations={
- *         "post"={
- *             "path"="/users-api",
- *             "method"="POST",
- *             "swagger_context"={
- *                 "tags"={"Authentication"},
- *                 "summary"={"User registration"}
- *             }
- *         },
- *         "get"={
- *             "path"="/users-api",
- *             "method"="GET",
- *             "swagger_context"={
- *                 "tags"={"User"}
- *             }
- *          }
- *     },
- * )
- *
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
