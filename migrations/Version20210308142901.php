@@ -23,7 +23,7 @@ final class Version20210308142901 extends AbstractMigration
         $this->addSql('ALTER TABLE media_object DROP FOREIGN KEY FK_14D43132BB3453DB');
         $this->addSql('DROP INDEX IDX_14D43132BB3453DB ON media_object');
         $this->addSql('ALTER TABLE media_object DROP work_id');
-        $this->addSql('ALTER TABLE user DROP username, CHANGE roles roles JSON NOT NULL');
+        $this->addSql('ALTER TABLE user DROP username, CHANGE roles roles TEXT NOT NULL');
         $this->addSql('ALTER TABLE work CHANGE updated_at updated_at DATETIME NOT NULL');
     }
 

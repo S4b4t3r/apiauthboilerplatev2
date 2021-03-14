@@ -3,8 +3,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\CreateMediaObjectAction;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -81,7 +79,6 @@ class MediaObject
         return $this;
     }
 
-    /*
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
@@ -93,7 +90,6 @@ class MediaObject
 
         return $this;
     }
-    */
 
     public function serialize()
     {
