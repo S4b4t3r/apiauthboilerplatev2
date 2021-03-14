@@ -60,6 +60,13 @@ export default {
           localStorage.setItem('token', token);
           window.alert('Connexion réussie !');
           emit('login', token)
+          console.log(response);
+          window.emitter.emit('name', response.data.data.name);
+          localStorage.setItem('name', response.data.data.name);
+          if(response.data.data.admin == true) {
+            localStorage.setItem('admin', true);
+            window.emitter.emit('admin', true);
+          }
         }
         
         else if(props.submit == 'signup' && response.status == 200) {

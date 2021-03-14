@@ -2,10 +2,6 @@
 <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0L60 29C120 58 240 115 360 151C480 187 600 202 720 180C840 159 960 101 1080 79C1200 58 1320 72 1380 79L1440 87V389H1380C1320 389 1200 389 1080 389C960 389 840 389 720 389C600 389 480 389 360 389C240 389 120 389 60 389H0V0Z" fill="url(#paint0_linear)"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M0 303L60 281C120 259 240 216 360 180C480 144 600 115 720 144C840 173 960 259 1080 267C1200 274 1320 202 1380 166L1440 130V389H1380C1320 389 1200 389 1080 389C960 389 840 389 720 389C600 389 480 389 360 389C240 389 120 389 60 389H0V303Z" fill="url(#paint1_linear)"/>
 <defs>
-<linearGradient id="paint0_linear" x1="1.01066e-05" y1="20" x2="1481" y2="412.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#EC78FF"/>
-<stop offset="1" stop-color="#7C6DD9"/>
-</linearGradient>
 <linearGradient id="paint1_linear" x1="1469" y1="114" x2="9.49996" y2="360.5" gradientUnits="userSpaceOnUse">
 <stop stop-color="#32E0C4"/>
 <stop offset="1" stop-color="#7775CC"/>

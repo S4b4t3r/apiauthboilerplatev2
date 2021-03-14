@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['inline-block px-8 py-2 text-center font-bold transition border-2 rounded-full cursor-pointer',
+    :class="['whitespace-nowrap inline-block px-8 py-2 text-center font-bold transition border-2 rounded-full cursor-pointer',
       reversed ? `text-white border-${color} hover:bg-transparent hover:text-${color} bg-${color}` :
       `text-${color} border-${color} hover:bg-${color} hover:text-white`,
     ]"

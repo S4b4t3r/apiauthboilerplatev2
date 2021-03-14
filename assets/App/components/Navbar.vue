@@ -3,8 +3,11 @@
         <nav class="relative flex justify-between p-4">
             <img class="inline-block" :src="require('../../img/smallLogo.svg').default">
             <div v-if="isLogged" class="inline-block nav__menu">
-                <div>
-                    <Button v-on:click="logout" text="Déconnexion" color="black"></Button>
+                <div class="flex items-center space-x-4">
+                    <div class="font-bold text-purple-500">
+                        {{name}}
+                    </div>
+                    <Button v-on:click="logout" text="Déconnexion" :color="isAdmin ? 'pink-600' : 'black'"></Button>
                 </div>
             </div>
             <div v-if="!isLogged" class="inline-block nav__menu">
@@ -20,6 +23,8 @@
                         ]">
                         </Popup>
                         <Popup v-on:close="popupType = ''" v-else-if="popupType == 'signup'" route="/register" cta="S'inscrire" submit="signup" ctaIcon="user-plus" :fields="[
+                            {type: 'text', placeholder: 'Nom', name: 'nom'},
+                            {type: 'text', placeholder: 'Prénom', name: 'prenom'},
                             {type: 'email', placeholder: 'Addresse mail', name: 'email'},
                             {type: 'password', placeholder: 'Mot de passe', name: 'password'},
                         ]">
@@ -38,8 +43,10 @@ export default {
   components: { Button, Popup },
   data() {
       return {
+        Name: '',
         popupType: '',
-        isLogged: false
+        isLogged: false,
+        isAdmin: false,
       }
   },
   mounted() {
@@ -47,12 +54,32 @@ export default {
     if(token) {
         this.isLogged = true;
     }
+    let admin = localStorage.getItem('admin');
+    if(admin) {
+        this.isAdmin = true;
+    }
+
+    let name = localStorage.getItem('name');
+    if(name) {
+        this.name = name;
+    }
+    window.emitter.on('admin', () => {
+        this.isAdmin = true;
+    } )   
+
+    window.emitter.on('name', (name) => {
+        this.name = name;
+    } )   
   },
   methods: {
     logout: function() {
         window.alert('Déconnexion réussie !');
         localStorage.removeItem('token');
+        localStorage.removeItem('admin');
+        localStorage.removeItem('name');   
+        this.isAdmin = false;
         this.isLogged = false;
+        this.name = '';
     }
   }
 }

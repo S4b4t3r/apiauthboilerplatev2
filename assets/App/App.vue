@@ -1,10 +1,11 @@
 <template>
   <div class="main">
     <transition name="appear">
-      <div class="relative darken" v-show="isOpen">
-        <div class="absolute w-1/3 p-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl top-1/2 left-1/2">
+      <div class="relative darken" v-if="isOpen">
+        <!-- <div class="absolute w-1/3 p-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl top-1/2 left-1/2">
           <upload></upload>
-        </div>
+        </div> -->
+        <category></category>
       </div>
     </transition>
     <navbar></navbar>
@@ -17,16 +18,18 @@
         :src="require('../img/logo.svg').default"
       />
     </div>
-    <img class="waves" :src="require('../img/waves.svg').default" />
+    <img class="waves waves_1" :src="require('../img/waves_1.svg').default" />
+    <img class="waves waves_2" :src="require('../img/waves_2.svg').default" />
   </div>
 </template>
 
 <script>
+import Category from './components/Category.vue';
 import Navbar from "./components/Navbar.vue";
-import Upload from "./components/Upload.vue";
+// import Upload from "./components/Upload.vue";
 
 export default {
-  components: { Navbar, Upload },
+  components: { Navbar, Category },
   data: function () {
     return {
       isOpen: false,
@@ -42,10 +45,21 @@ export default {
       }
     }
   },
+  mounted: function() {
+
+    // Popup manager
+
+    window.emitter.on('close', (e) => {
+      if(e == "finder") {
+        this.isOpen = false;
+      }
+    })
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+ 
 .darken {
   width: 100vw;
   height: 100vh;
@@ -54,19 +68,6 @@ export default {
   z-index: 10;
   top: 0;
   left: 0;
-}
-
-nav {
-  padding: 20px;
-
-  .nav__menu {
-    display: inline-flex;
-    float: right;
-
-    .nav__menu__profile {
-      margin-left: 20px;
-    }
-  }
 }
 
 .mainButton {
@@ -96,7 +97,6 @@ nav {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
-    animation: 10s linear mainButtonSpin infinite;
 
     img {
       position: absolute;
@@ -104,24 +104,14 @@ nav {
       top: 0;
       transform: translateX(-50%);
     }
-
-    @keyframes mainButtonSpin {
-      0% {
-        transform: translateX(-50%) translateY(-50%) rotate(0deg);
-      }
-
-      100% {
-        transform: translateX(-50%) translateY(-50%) rotate(360deg);
-      }
-    }
   }
 }
 .waves {
   position: absolute;
-  bottom: 0;
+  bottom: -100px;
   left: 0;
   width: 100%;
-  transform: translateY(20%);
+  transform: translateY(40%);
 }
 
 .appear-enter-active,
@@ -132,4 +122,5 @@ nav {
 .appear-leave-to {
   opacity: 0;
 }
+
 </style>
