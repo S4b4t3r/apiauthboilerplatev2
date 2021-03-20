@@ -48,7 +48,7 @@ class WorkController extends AbstractController
                 $work->setUpdatedAt(new \DateTime());
 
                 $manager->flush();
-                return new JsonResponse("Work edited!", 200);
+                return new JsonResponse($work->serialize());
             } else return new JsonResponse(['error' => "Missing data : 'title', 'description' & 'is_public' needed to create Work," . (!isset($data['title'])?:" 'title'") . (!isset($data['description'])?:" 'description'") . (!isset($data['is_public'])?:" 'is_public'") . " given."], 400);
         }
 
@@ -71,7 +71,7 @@ class WorkController extends AbstractController
         {
             $manager->remove($work);
             $manager->flush();
-            return new JsonResponse("Work deleted!", 200);
+            return new JsonResponse("Work deleted!");
         }
         return new JsonResponse(['error' => "Work id:".$work->getId()." doesn't belong to the User or is not an admin!"], 400);
     }
@@ -133,7 +133,7 @@ class WorkController extends AbstractController
                 */
                 $manager->persist($mediaObject);
                 $manager->flush();
-                return new JsonResponse("File created!", 200);
+                return new JsonResponse($mediaObject->serialize());
             }
             return new JsonResponse(['error' => "Missing data : 'filename', 'file' needed to create File," .
                 (!isset($data['filename']) ?: " 'filename'") .

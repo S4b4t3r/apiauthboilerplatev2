@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
             $user->setNom($data['nom']);
             $manager->persist($user);
             $manager->flush();
-            return new JsonResponse("User created!", 200);
+            return new JsonResponse("User created!");
         }
         return new JsonResponse(['error' => "Missing data : 'email', 'password', 'prenom', 'nom' needed to create User," .
             (!isset($data['email']) ?: " 'email'") .

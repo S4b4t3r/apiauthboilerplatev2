@@ -42,7 +42,7 @@ class NotificationController extends AbstractController
             $manager->remove($notification);
             // $notification->setIsRead(true);
             $manager->flush();
-            return new JsonResponse(["Notification read!"], 200);
+            return new JsonResponse(["Notification read!"]);
         } else {
             return new JsonResponse(['error' => "Notification id:".$notification->getId()." doesn't belong to the User!"], 400);
         }
