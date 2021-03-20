@@ -2,8 +2,8 @@
   <div>
     <div class="absolute flex flex-col w-2/3 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl top-1/2 left-1/2 min-h-3/4 max-h-3/4">
       <Title item="finder" class="px-4 py-4" title="Gestionnaire de fichiers"></Title>
-      <div v-for="assessment in assessments" :key="assessment">
-        <assessment v-if="currentAssessment == assessment.id" :data="assessment"></assessment>
+      <div :class="currentAssessment == assessment.id ? 'flex flex-1' : ''" v-for="assessment in assessments" :key="assessment">
+        <assessment class="flex" v-if="currentAssessment == assessment.id" :data="assessment"></assessment>
       </div>
       <div v-if="currentAssessment == null" class="flex flex-1">
         <div class="flex flex-col justify-between w-1/3 px-4 pt-4 border-t border-r border-gray-300">

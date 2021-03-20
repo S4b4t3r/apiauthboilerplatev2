@@ -60,6 +60,10 @@ export default {
 
 <style lang="scss" scoped>
  
+body {
+  overflow: hidden;
+}
+
 .darken {
   width: 100vw;
   height: 100vh;
