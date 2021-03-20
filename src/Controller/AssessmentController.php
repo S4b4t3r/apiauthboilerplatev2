@@ -34,7 +34,7 @@ class AssessmentController extends AbstractController
             $assessment->setDueDate($dueDate? $dueDate: null);
 
             $manager->flush();
-            return new JsonResponse("Assessment edited!", 200);
+            return new JsonResponse($assessment->serialize());
 
         } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }
@@ -50,7 +50,7 @@ class AssessmentController extends AbstractController
             $manager = $this->getDoctrine()->getManager();
             $manager->remove($assessment);
             $manager->flush();
-            return new JsonResponse("Assessment deleted!", 200);
+            return new JsonResponse("Assessment deleted!");
 
         } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }
@@ -96,7 +96,7 @@ class AssessmentController extends AbstractController
 
             $manager->persist($work);
             $manager->flush();
-            return new JsonResponse("Work created!", 200);
+            return new JsonResponse($work->serialize());
 
         }  else return new JsonResponse(['error' => "Missing data : 'title', 'description' & 'is_public' needed to create Work," . (!isset($data['title'])?"":" 'title'") . (!isset($data['description'])?"":" 'description'") . (!isset($data['is_public'])?"":" 'is_public'") . " given."], 400);
     }

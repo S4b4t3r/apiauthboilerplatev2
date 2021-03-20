@@ -59,7 +59,7 @@ class CategoryController extends AbstractController
             $category->setTitle($data['title']);
             $manager->persist($category);
             $manager->flush();
-            return new JsonResponse("Category created!", 200);
+            return new JsonResponse($category->serialize());
 
         } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }
@@ -79,7 +79,7 @@ class CategoryController extends AbstractController
             $category->setAdmin($admin);
             $category->setTitle($data['title']);
             $manager->flush();
-            return new JsonResponse("Category edited!", 200);
+            return new JsonResponse($category->serialize());
 
         } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }
@@ -96,7 +96,7 @@ class CategoryController extends AbstractController
             $manager = $this->getDoctrine()->getManager();
             $manager->remove($category);
             $manager->flush();
-            return new JsonResponse("Category deleted!", 200);
+            return new JsonResponse("Category deleted!");
 
         } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }
@@ -138,7 +138,7 @@ class CategoryController extends AbstractController
 
             $manager->persist($assessment);
             $manager->flush();
-            return new JsonResponse("Assessment created!", 200);
+            return new JsonResponse($assessment->serialize());
 
         } else return new JsonResponse(['error' => "User is not an admin !"], 400);
     }

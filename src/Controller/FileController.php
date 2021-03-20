@@ -49,7 +49,7 @@ class FileController extends AbstractController
                 */
                 $manager->persist($mediaObject);
                 $manager->flush();
-                return new JsonResponse("File created!", 200);
+                return new JsonResponse("File created!");
             }
             return new JsonResponse(['error' => "Missing data : 'filename', 'file' needed to create File," .
                 (!isset($data['filename']) ?: " 'filename'") .

@@ -94,6 +94,7 @@ class MediaObject
     public function serialize()
     {
         return [
+            "id" => $this->id,
             "file_path" => $this->filePath,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at

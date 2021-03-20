@@ -45,7 +45,7 @@ class LikeController extends AbstractController
             $like->setUser($user);
             $manager->persist($like);
             $manager->flush();
-            return new JsonResponse("Like added!", 200);
+            return new JsonResponse("Like added!");
         }
         return new JsonResponse(['error' => "Already liked!"], 400);
 
@@ -66,7 +66,7 @@ class LikeController extends AbstractController
         {
             $manager->remove($like);
             $manager->flush();
-            return new JsonResponse("Like deleted!", 200);
+            return new JsonResponse("Like deleted!");
         }
         return new JsonResponse(['error' => "Not liked!"], 400);
 
