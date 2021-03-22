@@ -8,10 +8,14 @@
       <div v-if="currentAssessment == null" class="flex flex-1">
         <div class="flex flex-col justify-between w-1/3 px-4 pt-4 border-t border-r border-gray-300">
           <div class="space-y-4 overflow-y-auto">
-            <div class="flex w-full font-bold transition cursor-pointer" v-for="category in categories" :key="category">
-              <span :class="[currentCategory == category.id ? 'text-purple-500': '']" class="hover:text-purple-500" v-on:click="showAssessments(category.id)">{{category.title}}</span>
-              <div v-if="isAdmin == true" class="ml-auto hover:text-red-700" v-on:click="deleteCategory(category.id)">
-                <font-awesome-icon :icon="['fas', 'times']" />
+            <input class="border px-4 w-full py-2 rounded-full" type="text" v-model="categorySearch">
+            <div class="flex w-full font-bold transition cursor-pointer" :class="[category.title.includes(categorySearch) ? '' : 'hidden']" v-for="category in categories" :key="category">
+              
+              <span v-if="titleEdit != category.id" :class="[currentCategory == category.id ? 'text-purple-500': '']" class="hover:text-purple-500" v-on:click="showAssessments(category.id)">{{category.title}}</span>
+              <input v-if="titleEdit == category.id"  v-model="category.title" v-on:keyup.enter="editCategory(category.id, category.title)">
+              <div v-if="isAdmin == true" class="ml-auto">
+                <font-awesome-icon :icon="['fas', 'pencil']" class="hover:text-purple-500 mr-2" v-on:click="titleEdit = category.id"/>
+                <font-awesome-icon :icon="['fas', 'times']" class="hover:text-red-700" v-on:click="deleteCategory(category.id)"/>
               </div>
             </div>
           </div>
@@ -19,7 +23,8 @@
         <div class="flex flex-col justify-between w-2/3 p-4 border-t border-gray-300">
           <div class="relative h-full mb-4">
             <div class="absolute w-full h-full space-y-2 overflow-y-auto">
-              <div class="flex w-full font-bold transition cursor-pointer" v-for="assessment in assessments" :key="assessment">
+              <input class="border px-4 w-full py-2 rounded-full" type="text" v-model="assessmentSearch">
+              <div class="flex w-full font-bold transition cursor-pointer" :class="[assessment.title.includes(assessmentSearch) ? '' : 'hidden']" v-for="assessment in assessments" :key="assessment">
                   <div class="flex w-full p-4 bg-gray-100 border border-gray-300 rounded-sm">
                     <span v-on:click="currentAssessment = assessment.id">{{assessment.title}}</span>
                     <div v-if="isAdmin == true" class="ml-auto hover:text-red-700" v-on:click="deleteAssessment(assessment.id)">
@@ -91,11 +96,33 @@ export default {
       categories: [],
       assessments: [],
       works: [],
-      datePicker: false
+      datePicker: false,
+      categorySearch: '',
+      assessmentSearch: '',
+      titleEdit: null,
     }
   },
 
   methods: {
+    editCategory: async function(id, title) {
+      let response = await axios({
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        method: 'put',
+        url: window.address + '/api/categories/' + id,   
+        data: {
+          'title': title,
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      if(response) {
+        this.titleEdit = null;
+      }
+    },
     getCategories: async function() {
       let response = await axios({
         headers: {
@@ -167,7 +194,7 @@ export default {
       });
       if(response) {
         console.log(response);
-        this.showAssessment(this.currentCategory);
+        this.showAssessments(this.currentCategory);
       }
     },
 
@@ -189,7 +216,7 @@ export default {
         console.log(error);
       });
       if(response) {
-        this.showAssessment(id);
+        this.showAssessments(this.currentCategory);
       }
     },
 

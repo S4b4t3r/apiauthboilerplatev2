@@ -9,13 +9,19 @@
           <font-awesome-icon class=" text-black text-purple-500 cursor-pointer" :icon="['fas', 'arrow-left']" size="lg" v-on:click="close"/>
           <div class="text-purple-500">Retour</div>
         </div>
-        <h1 class="text-xl font-semibold">{{data.title}}</h1>
-        <p class="italic">{{data.description}}</p>
+        <h1 v-if="!titleEdit" v-on:click="titleEdit = true" class="text-xl font-semibold">{{data.title}}</h1>
+        <input v-if="titleEdit" v-on:keyup.enter="editAssessment(data.id)" v-model="data.title">
+        <div class="grid grid-cols-5 gap-2">
+          <p class="italic col-span-4" v-if="!titleEdit" v-on:click="titleEdit = true">{{data.description}}</p>
+          <input class="col-span-4" v-if="titleEdit" v-on:keyup.enter="editAssessment(data.id)" v-model="data.description">
+          <p class="text-purple-500 font-bold col-span-1 text-right" v-on:click="orderByLikes()">Trier par likes</p>
+        </div>
         <div>
+          <input class="border px-4 w-full py-2 rounded-full mb-4" type="text" v-model="workSearch">
           <div class="grid grid-cols-5 gap-4">
-            <div class="col-span-1 relative p-2 space-y-2 border border-gray-300 rounded-xl" v-for="work in works" :key="work">
+            <div class="col-span-1 relative p-2 space-y-2 border border-gray-300 rounded-xl" :class="[work.title.includes(workSearch) || work.author.includes(workSearch) ? '' : 'hidden']"  v-for="work in works" :key="work">
               <div v-if="isAdmin == true" class="ml-auto absolute top-4 right-4 hover:text-red-700 cursor-pointer" v-on:click="deleteWork(data.id, work.id)">
-                <font-awesome-icon :icon="['fas', 'trash']" />
+                <font-awesome-icon :icon="['fas', 'trash']"/>
               </div>
               <h2 class="font-bold text-purple-500" v-on:click="currentWork= work.id">{{work.title}}</h2>
               <h3 class="text-sm font-semibold text-gray-500">{{work.author}}</h3>
@@ -72,7 +78,9 @@ export default {
     return {
       works: [],
       isAdmin: false,
-      currentWork: null,
+      currentWork: null,  
+      workSearch: '',
+      titleEdit: false,
     }
   },
   mounted: function() {
@@ -81,8 +89,37 @@ export default {
         this.isAdmin = true;
     };
     this.getWorks(this.data.id);
+    window.emitter.on('close', (e) => {
+      if(e == "work") {
+        this.currentWork = null;
+      }
+    })
   },
   methods: {
+    orderByLikes: function() {
+      this.works.sort((a, b) => (a.likes < b.likes) ? 1 : -1);
+    },
+    editAssessment: async function(id) {
+      let response = await axios({
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        method: 'put',
+        url: window.address + '/api/assessments/' + id,   
+        data: {
+          'title': this.data.title,
+          'description': this.data.description,
+          'dueDate': null,
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      if(response) {
+        this.titleEdit = false;
+      }
+    },
     getWorks: async function(id) {
       let response = await axios({
         headers: {
