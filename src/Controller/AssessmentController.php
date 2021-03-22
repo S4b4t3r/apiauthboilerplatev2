@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Assessment;
+use App\Entity\Notification;
 use App\Entity\Work;
 use App\Repository\LikeRepository;
+use App\Repository\NotificationRepository;
 use App\Repository\WorkRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,20 +81,31 @@ class AssessmentController extends AbstractController
      * @Route("/{assessment}/work", methods={"POST"}, name="works_create")
      * @param Assessment $assessment
      */
-    public function createWork(Assessment $assessment, Request $request): JsonResponse
+    public function createWork(Assessment $assessment, Request $request, NotificationRepository $notificationRepository): JsonResponse
     {
         // $admin = $this->getUser()->getAdmin();
         $manager = $this->getDoctrine()->getManager();
         $data = json_decode($request->getContent(), true);
+        $user = $this->getUser();
 
         if (isset($data['title']) && isset($data['description']) && isset($data['is_public'])) // TODO : Droits de création
         {
             $work = new Work();
             $work->setAssessment($assessment);
-            $work->setUser($this->getUser());
+            $work->setUser($user);
             $work->setTitle($data['title']);
             $work->setDescription($data['description']);
             $work->setIsPublic($data['is_public']);
+
+            if ($notificationRepository->findOneBy(["type" => "worksubmitted_" . $work->getId()]) != null) {
+                $notification = new Notification();
+                $notification->setUser($user);
+                $notification->setType("worksubmitted_" . $work->getId()); // TODO : il devrait il y avoir un champ "extra-data"
+                $notification->setText("<a data-workid='" . $work->getId() . "'>" . $work->getTitle() . "</a> a bien été envoyé !");
+                $notification->setIsRead(false);
+
+                $manager->persist($notification);
+            }
 
             $manager->persist($work);
             $manager->flush();
