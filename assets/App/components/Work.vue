@@ -5,8 +5,10 @@
         <font-awesome-icon class=" text-black text-purple-500 cursor-pointer" :icon="['fas', 'arrow-left']" size="lg" v-on:click="close"/>
         <div class="text-purple-500">Retour</div>
       </div>
-      <h1 class="text-xl font-semibold">{{data.title}}</h1>
-      <p class="italic">{{data.description}}</p>
+      <h1 class="text-xl font-semibold" v-if="!titleEdit" v-on:click="titleEdit = true">{{data.title}}</h1>
+      <input class="block" v-if="titleEdit" v-on:keyup.enter="editWork(data.id)" v-model="data.title">
+      <p v-if="!titleEdit" v-on:click="titleEdit = true" class="italic">{{data.description}}</p>
+      <input class="block" v-if="titleEdit" v-on:keyup.enter="editWork(data.id)" v-model="data.description">
       <div class="space-y-4 font-bold text-purple-500">
         <div v-for="file in files" :key="file" class="flex space-x-4"> 
           <a :href="'/media/' + file.file_path">{{file.file_path ? file.file_path : 'Fichier sans nom'}}</a>
@@ -56,6 +58,7 @@ export default {
     return {
       files: [],
       isAdmin: false,
+      titleEdit: false
     }
   },
   mounted: function() {
@@ -66,6 +69,27 @@ export default {
     this.getFiles(this.data.id);
   },
   methods: {
+    editWork: async function(id) {
+      let response = await axios({
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        method: 'put',
+        url: window.address + '/api/works/' + id,   
+        data: {
+          'title': this.data.title,
+          'description': this.data.description,
+          'is_public': true
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      if(response) {
+        this.titleEdit = false;
+      }
+    },
     getFiles: async function(id) {
       let response = await axios({
         headers: {
@@ -138,7 +162,7 @@ export default {
     },
 
     close: function() {
-      window.emitter.emit('close', 'assessment')
+      window.emitter.emit('close', 'work')
     }
   }
 }

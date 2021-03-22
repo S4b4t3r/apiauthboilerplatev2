@@ -1,3 +1,7 @@
+body {
+  overflow: hidden;
+}
+
 .mainButton__drop {
   animation: mainButtonSpin 10s infinite linear;
 }
