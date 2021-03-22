@@ -85,8 +85,8 @@ class WorkController extends AbstractController
     {
         $user = $this->getUser();
         $data['work'] = $work->serialize();
-        
-        if ($work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
+
+        if ($work->getIsPublic() || $work->getUser()->getId() === $user->getId() || !is_null($user->getAdmin()))
         {
             $data['files'] = [];
             foreach ($work->getMediaObjects() as $file) {
