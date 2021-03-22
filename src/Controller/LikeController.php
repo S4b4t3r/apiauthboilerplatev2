@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Like;
 use App\Entity\MediaObject;
+use App\Entity\Notification;
 use App\Entity\Work;
 use App\Repository\LikeRepository;
+use App\Repository\NotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +34,7 @@ class LikeController extends AbstractController
      * @Route("/{work}", methods={"POST"}, name="add")
      * @param Work $work
      */
-    public function addLike(Work $work, LikeRepository $likeRepository): JsonResponse
+    public function addLike(Work $work, LikeRepository $likeRepository, NotificationRepository $notificationRepository): JsonResponse
     {
         $manager = $this->getDoctrine()->getManager();
         $user = $this->getUser();
@@ -44,6 +46,17 @@ class LikeController extends AbstractController
             $like->setWork($work);
             $like->setUser($user);
             $manager->persist($like);
+
+            if ($notificationRepository->findOneBy(["type" => "work_liked_" . $work->getId()]) != null) {
+                $notification = new Notification();
+                $notification->setUser($work->getUser());
+                $notification->setType("liked_" . $work->getId()); // TODO : il devrait il y avoir un champ "extra-data"
+                $notification->setText("Un utilisateur a liké : <a data-workid=" . $work->getId() . "'>" . $work->getTitle() . "</a> !");
+                $notification->setIsRead(false);
+
+                $manager->persist($notification);
+            }
+
             $manager->flush();
             return new JsonResponse("Like added!");
         }
