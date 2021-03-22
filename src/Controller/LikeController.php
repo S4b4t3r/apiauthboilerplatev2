@@ -47,11 +47,11 @@ class LikeController extends AbstractController
             $like->setUser($user);
             $manager->persist($like);
 
-            if ($notificationRepository->findOneBy(["type" => "work_liked_" . $work->getId()]) != null) {
+            if ($notificationRepository->findOneBy(["type" => "liked_" . $work->getId()]) == null) {
                 $notification = new Notification();
                 $notification->setUser($work->getUser());
                 $notification->setType("liked_" . $work->getId()); // TODO : il devrait il y avoir un champ "extra-data"
-                $notification->setText("Un utilisateur a liké : <a data-workid=" . $work->getId() . "'>" . $work->getTitle() . "</a> !");
+                $notification->setText("Un utilisateur a liké : <a data-workid='" . $work->getId() . "'>" . $work->getTitle() . "</a> !");
                 $notification->setIsRead(false);
 
                 $manager->persist($notification);
