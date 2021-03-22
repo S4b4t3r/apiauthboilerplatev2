@@ -23,7 +23,7 @@ class NotificationController extends AbstractController
 
         $data['notifications'] = [];
         foreach ($user->getNotifications() as $n) {
-            array_push($data['notifications'], $n->serialize);
+            array_push($data['notifications'], $n->serialize());
         }
         return new JsonResponse($data);
     }
