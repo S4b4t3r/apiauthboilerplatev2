@@ -27,6 +27,11 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         // GENERATE TEST DATA
+        $categoryTitles = ['Mathématiques', 'Infographie'];
+        $assessmentTitles = ['TP 1 : Introduction à l\'addition', 'TP 2 : Produit de matrice Jacobienne en 4 dimensions', "Design d'une enseigne de baignoires", "Photoshop : Votre Abbey Road"];
+        $workTitles = ['My assessment', 'Rendu TP', 'Preuve par l\'inverse', 'Démonstration par l\'absurde', "BainCorp : la baignoire du businessman", "Batsu", "Abbey Highway to Hell", "Abbey Road Godzilla"];
+
+
         $admin = new Admin();
 
         $user = new User();
@@ -38,34 +43,41 @@ class AppFixtures extends Fixture
         $user->setAdmin($admin);
 
         $user2 = new User();
-        $user2->setEmail("jules@ab.cd");
+        $user2->setEmail("alice@ab.cd");
         $password = $this->encoder->encodePassword($user2, 'abcd');
         $user2->setPassword($password);
-        $user2->setNom("Sabater");
-        $user2->setPrenom("Jules");
+        $user2->setNom("Pristchepa");
+        $user2->setPrenom("Alice");
 
-        for ($i = 1; $i < 3; $i++) {
+        $user3 = new User();
+        $user3->setEmail("jules@ab.cd");
+        $password = $this->encoder->encodePassword($user2, 'abcd');
+        $user3->setPassword($password);
+        $user3->setNom("Sabater");
+        $user3->setPrenom("Jules");
+
+        for ($i = 0; $i < 2; $i++) {
             $category = new Category();
-            $category->setTitle('Test category ' . $i);
-            $category->setDescription('Test description ' . $i);
+            $category->setTitle($categoryTitles[$i]);
+            $category->setDescription('La description de la catégorie');
             $category->setAdmin($admin);
 
-            for ($j = 1; $j < 3; $j++) {
+            for ($j = 0; $j < 2; $j++) {
                 $assessment = new Assessment();
-                $assessment->setTitle('Test assessment ' . $i);
-                $assessment->setDescription('Assessment description');
+                $assessment->setTitle($assessmentTitles[(2*$i)+$j]);
+                $assessment->setDescription('La description du travail à rendre');
                 $assessment->setCategory($category);
                 $date = new DateTime('now');
                 $date->modify($j == 1 ? '-7 day' : '+7 day');
                 $assessment->setDueDate($date);
 
-                for ($k = 1; $k < 3; $k++) {
+                for ($k = 0; $k < 2; $k++) {
                     $work = new Work();
-                    $work->setTitle('Test work ' . $k);
-                    $work->setDescription('Work description');
+                    $work->setTitle($workTitles[4*$i+2*$j+$k]);
+                    $work->setDescription('Mon travail');
                     $work->setIsPublic($k == 1); // (une entité sera true, l'autre false)
                     $work->setAssessment($assessment);
-                    $work->setUser($j % 2 == 0 ? $user : $user2);
+                    $work->setUser($j % 2 == 0 ? $user3 : $user2);
                     $work->setCreatedAt(new DateTime('now'));
                     $work->setUpdatedAt(new DateTime('now'));
 
@@ -88,18 +100,19 @@ class AppFixtures extends Fixture
             $manager->persist($category);
         }
 
-        for ($i = 1; $i < 7; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $notification = new Notification();
             $notification->setUser($user);
             $notification->setType('newupload');
-            $notification->setIsRead($i%2 == 0 ? true : false); // Pour la clarté (une entité sera true, l'autre false)
-            $notification->setText('Un nouveau travail à été uploadé sur Assessment 1');
+            $notification->setIsRead(false); // Pour la clarté (une entité sera true, l'autre false)
+            $notification->setText('Un utilisateur a liké votre travail !');
             $manager->persist($notification);
         }
 
         $manager->persist($admin);
         $manager->persist($user);
         $manager->persist($user2);
+        $manager->persist($user3);
 
         $manager->flush();
     }
