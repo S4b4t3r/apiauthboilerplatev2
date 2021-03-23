@@ -72,6 +72,7 @@ class FileController extends AbstractController
         {
             $manager->remove($file);
             $manager->flush();
+            return new JsonResponse("File deleted!", 200);
         }
         return new JsonResponse(['error' => "File id:".$file->getId()." doesn't belong to the User or is not an admin!"], 400);
     }
