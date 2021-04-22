@@ -37,12 +37,11 @@
           <div v-if="isAdmin == true && currentCategory != null">
             <div class="grid grid-cols-5 gap-2 pb-4">
               <input
-                class="w-full h-8 col-span-2 px-4 py-5 border border-gray-300 rounded-md"
+                class="w-full h-8 col-span-4 px-4 py-5 border border-gray-300 rounded-md"
                 placeholder="Ajouter une évaluation"
                 data-ref="assessmentTitle"
                 type="text"
               />
-              <input data-ref="assessmentDate" type="date" class="w-full h-8 col-span-2 px-4 py-5 border border-gray-300 rounded-md">
               <Button       
                 v-on:click="addAssessment(currentCategory)"
                 text="Ajouter"
@@ -51,7 +50,7 @@
               </Button>
             </div>
             <input
-              class="w-full h-8 px-4 py-5 mb-4 border border-gray-300 rounded-md"
+              class="w-full h-8 px-4 py-5 border border-gray-300 rounded-md"
               placeholder="Ajouter une description (optionel)"
               data-ref="assessmentDescription"
               type="text"
@@ -104,6 +103,13 @@ export default {
   },
 
   methods: {
+    isAuthorized: function() {
+      if(this.isAdmin) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     editCategory: async function(id, title) {
       let response = await axios({
         headers: {
@@ -209,7 +215,7 @@ export default {
         data: {
           'title': document.querySelector('[data-ref="assessmentTitle"]').value,
           'description': document.querySelector('[data-ref="assessmentDescription"]').value,
-          'dueDate': document.querySelector('[data-ref="assessmentDate"]').value
+          'dueDate': null
         }
       })
       .catch(function (error) {

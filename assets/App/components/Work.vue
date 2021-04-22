@@ -5,10 +5,10 @@
         <font-awesome-icon class=" text-black text-purple-500 cursor-pointer" :icon="['fas', 'arrow-left']" size="lg" v-on:click="close"/>
         <div class="text-purple-500">Retour</div>
       </div>
-      <h1 class="text-xl font-semibold" v-if="!titleEdit" v-on:click="titleEdit = true">{{data.title}}</h1>
-      <input class="block" v-if="titleEdit" v-on:keyup.enter="editWork(data.id)" v-model="data.title">
-      <p v-if="!titleEdit" v-on:click="titleEdit = true" class="italic">{{data.description}}</p>
-      <input class="block" v-if="titleEdit" v-on:keyup.enter="editWork(data.id)" v-model="data.description">
+      <h1 class="text-xl font-semibold" v-if="!titleEdit" v-on:click="isAuthorized() ? titleEdit = true : ''">{{data.title}}</h1>
+      <input class="text-xl font-semibold block" v-if="titleEdit" v-on:keyup.enter="editWork(data.id)" v-model="data.title">
+      <p v-if="!titleEdit" v-on:click="isAuthorized() ? titleEdit = true : ''" class="italic">{{data.description}}</p>
+      <input class="block italic" v-if="titleEdit" v-on:keyup.enter="editWork(data.id)" v-model="data.description">
       <div class="space-y-4 font-bold text-purple-500">
         <div v-for="file in files" :key="file" class="flex space-x-4"> 
           <a :href="'/media/' + file.file_path">{{file.file_path ? file.file_path : 'Fichier sans nom'}}</a>
@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-5 gap-2">
+    <div class="grid grid-cols-5 gap-2" v-if="isUser || isAdmin">
       <label class="flex col-span-4 items-center justify-center block h-8 px-4 py-5 font-bold transition border-2 border-black rounded-md cursor-pointer hover:bg-black hover:text-white">
         Ajouter un fichier
         <font-awesome-icon class="ml-4" :icon="['fas', 'upload']" />
@@ -57,18 +57,31 @@ export default {
   data() {
     return {
       files: [],
+      isUser: false,
       isAdmin: false,
       titleEdit: false
     }
   },
   mounted: function() {
     let admin = localStorage.getItem('admin');
+    let user = localStorage.getItem('name');
     if(admin) {
-        this.isAdmin = true;
+      this.isAdmin = true;
     };
+    if(user == this.data.author) {
+      this.isUser = true;
+    };
+    console.log(this.data);
     this.getFiles(this.data.id);
   },
   methods: {
+    isAuthorized: function() {
+      if(this.isUser || this.isAdmin) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     editWork: async function(id) {
       let response = await axios({
         headers: {

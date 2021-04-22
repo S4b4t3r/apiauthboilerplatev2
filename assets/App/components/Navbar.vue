@@ -18,14 +18,14 @@
                 <div class="absolute right-0 transform translate-y-full right-6 -bottom-8">
                     <transition name="appear" mode="out-in">
                         <Popup v-on:login="popupType = ''; isLogged = true" route="/authentication_token" v-if="popupType == 'login'" submit="login" cta="Se connecter" ctaIcon="sign-in-alt" :fields="[
-                            {type: 'text', placeholder: 'Addresse mail', name: 'email'},
+                            {type: 'mail', placeholder: 'Addresse mail', name: 'email'},
                             {type: 'password', placeholder: 'Mot de passe', name: 'password'},
                         ]">
                         </Popup>
                         <Popup v-on:close="popupType = ''" v-else-if="popupType == 'signup'" route="/register" cta="S'inscrire" submit="signup" ctaIcon="user-plus" :fields="[
                             {type: 'text', placeholder: 'Nom', name: 'nom'},
                             {type: 'text', placeholder: 'Prénom', name: 'prenom'},
-                            {type: 'email', placeholder: 'Addresse mail', name: 'email'},
+                            {type: 'mail', placeholder: 'Addresse mail', name: 'email'},
                             {type: 'password', placeholder: 'Mot de passe', name: 'password'},
                         ]">
                         </Popup>

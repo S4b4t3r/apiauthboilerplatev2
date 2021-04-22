@@ -6,7 +6,6 @@ import { fas } from '@fortawesome/pro-solid-svg-icons'
 import { fal } from '@fortawesome/pro-light-svg-icons'
 import { far } from '@fortawesome/pro-regular-svg-icons'
 import { fad } from '@fortawesome/pro-duotone-svg-icons'
-import VCalendar from 'v-calendar';
 import vClickOutside from 'v-click-outside'
 
 import mitt from 'mitt';
@@ -21,6 +20,5 @@ library.add(fas, fal, far, fad)
 
 let app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
-app.use(VCalendar, {}); 
 app.use(vClickOutside)
 app.mount('#app')

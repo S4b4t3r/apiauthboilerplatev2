@@ -1,10 +1,18 @@
 <template>
   <div class="main">
+    <div class="notification z-50 absolute left-4 top-4 space-y-4">
+      <div v-for="(notification, index) in notifications" :key="notification" class="bg-white border-purple-500 border rounded-lg p-4 grid grid-cols-5 gap-2 w-48">
+        <div class="col-span-4">
+          {{notification.text}}
+        </div>
+        <div>
+          <font-awesome-icon class="col-span-1 ml-auto cursor-pointer" :icon="['fas', 'times']" v-on:click="deleteNotification(notification.id)"/>
+        </div>
+      </div>
+    </div>
     <transition name="appear">
       <div class="relative darken" v-if="isOpen">
-        <!-- <div class="absolute w-1/3 p-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl top-1/2 left-1/2">
-          <upload></upload>
-        </div> -->
+        
         <category></category>
       </div>
     </transition>
@@ -26,6 +34,8 @@
 <script>
 import Category from './components/Category.vue';
 import Navbar from "./components/Navbar.vue";
+import axios from 'axios';
+
 // import Upload from "./components/Upload.vue";
 
 export default {
@@ -33,6 +43,7 @@ export default {
   data: function () {
     return {
       isOpen: false,
+      notifications: []
     };
   },
   methods: {
@@ -42,6 +53,40 @@ export default {
         this.isOpen = true;
       } else {
         window.alert('Veuillez d\'abord vous connecter');
+      }
+    },
+
+    checkNotifications: async function() {
+      let response = await axios({
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        method: 'get',
+        url: window.address + '/api/notifications'
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      if(response) {
+        this.notifications = response.data.notifications;
+      }
+    },
+
+    deleteNotification: async function(id) {
+      let response = await axios({
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        method: 'post',
+        url: window.address + '/api/notifications/' + id
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      if(response){
+        notifications.splice(index, 1);
       }
     }
   },
@@ -54,6 +99,10 @@ export default {
         this.isOpen = false;
       }
     })
+
+    let intervalId = window.setInterval(() => {
+      this.checkNotifications();
+    }, 2000);
   }
 };
 </script>

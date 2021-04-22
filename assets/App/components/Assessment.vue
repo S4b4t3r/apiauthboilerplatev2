@@ -9,11 +9,11 @@
           <font-awesome-icon class=" text-black text-purple-500 cursor-pointer" :icon="['fas', 'arrow-left']" size="lg" v-on:click="close"/>
           <div class="text-purple-500">Retour</div>
         </div>
-        <h1 v-if="!titleEdit" v-on:click="titleEdit = true" class="text-xl font-semibold">{{data.title}}</h1>
-        <input v-if="titleEdit" v-on:keyup.enter="editAssessment(data.id)" v-model="data.title">
+        <h1 v-if="!titleEdit" v-on:click="isAuthorized() ? titleEdit = true : ''" class="text-xl font-semibold">{{data.title}}</h1>
+        <input class="text-xl font-semibold" v-if="titleEdit" v-on:keyup.enter="editAssessment(data.id)" v-model="data.title">
         <div class="grid grid-cols-5 gap-2">
-          <p class="italic col-span-4" v-if="!titleEdit" v-on:click="titleEdit = true">{{data.description}}</p>
-          <input class="col-span-4" v-if="titleEdit" v-on:keyup.enter="editAssessment(data.id)" v-model="data.description">
+          <p class="italic col-span-4" v-if="!titleEdit" v-on:click="isAuthorized() ? titleEdit = true : ''">{{data.description}}</p>
+          <input class="italic  col-span-4" v-if="titleEdit" v-on:keyup.enter="editAssessment(data.id)" v-model="data.description">
           <p class="text-purple-500 font-bold col-span-1 text-right" v-on:click="orderByLikes()">Trier par likes</p>
         </div>
         <div>
@@ -25,7 +25,6 @@
               </div>
               <h2 class="font-bold text-purple-500" v-on:click="currentWork= work.id">{{work.title}}</h2>
               <h3 class="text-sm font-semibold text-gray-500">{{work.author}}</h3>
-              <p class="italic">{{work.description}}</p>
               <div class="flex items-center justify-end w-full space-x-2">
                 <div class="font-bold text-pink-400">{{work.likes}}</div>
                 <font-awesome-icon v-on:click="like(work.id)" v-if="work.is_liked == false" class="text-black text-pink-400 cursor-pointer" :icon="['far', 'heart']" size="lg"/>
@@ -38,7 +37,7 @@
       <div class="grid grid-cols-5 gap-2">
         <input
             class="w-full h-8 col-span-2 px-4 py-5 border border-gray-300 rounded-md"
-            placeholder="Ajouter une travail"
+            placeholder="Ajouter un travail"
             data-ref="workTitle"
             type="text"
           />
@@ -96,6 +95,13 @@ export default {
     })
   },
   methods: {
+    isAuthorized: function() {
+      if(this.isAdmin) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     orderByLikes: function() {
       this.works.sort((a, b) => (a.likes < b.likes) ? 1 : -1);
     },
